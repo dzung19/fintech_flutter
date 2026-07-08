@@ -22,6 +22,7 @@ import 'package:dio/dio.dart';
 
 import '../errors/exceptions.dart';
 import '../security/secure_storage_service.dart';
+import 'mock_interceptor.dart';
 
 /// Configuration constants for the Dio HTTP client.
 ///
@@ -41,6 +42,9 @@ abstract final class ApiConfig {
 
   /// Maximum time to wait for sending the request body.
   static const Duration sendTimeout = Duration(seconds: 15);
+
+  /// Toggle this to mock all remote network requests client-side.
+  static const bool useMockApi = true;
 }
 
 /// Centralized HTTP client wrapping [Dio] with authentication, error
@@ -90,27 +94,31 @@ class DioClient {
     );
 
     // Wire up interceptors in execution order.
-    dio.interceptors.addAll([
-      AuthInterceptor(secureStorageService: secureStorageService),
-      // NOTE: LogInterceptor is for development only.
-      // SECURITY: Disable request/response body logging in production
-      // to prevent token/PII leakage in logs.
-      // TODO(security): Gate this behind a build flavor or environment flag.
-      LogInterceptor(
-        request: true,
-        requestHeader: false, // Don't log auth headers.
-        requestBody: false, // Don't log request bodies (may contain PII).
-        responseHeader: false,
-        responseBody: false, // Don't log response bodies (may contain PII).
-        error: true,
-        logPrint: (Object object) {
-          // SECURITY: In production, route to a structured logger
-          // that strips sensitive fields.
-          // ignore: avoid_print
-          print('[DioClient] $object');
-        },
-      ),
-    ]);
+    if (ApiConfig.useMockApi) {
+      dio.interceptors.add(MockInterceptor());
+    } else {
+      dio.interceptors.addAll([
+        AuthInterceptor(secureStorageService: secureStorageService),
+        // NOTE: LogInterceptor is for development only.
+        // SECURITY: Disable request/response body logging in production
+        // to prevent token/PII leakage in logs.
+        // TODO(security): Gate this behind a build flavor or environment flag.
+        LogInterceptor(
+          request: true,
+          requestHeader: false, // Don't log auth headers.
+          requestBody: false, // Don't log request bodies (may contain PII).
+          responseHeader: false,
+          responseBody: false, // Don't log response bodies (may contain PII).
+          error: true,
+          logPrint: (Object object) {
+            // SECURITY: In production, route to a structured logger
+            // that strips sensitive fields.
+            // ignore: avoid_print
+            print('[DioClient] $object');
+          },
+        ),
+      ]);
+    }
 
     return DioClient(dio: dio);
   }
