@@ -99,9 +99,9 @@ class DioClient {
       LogInterceptor(
         request: true,
         requestHeader: false, // Don't log auth headers.
-        requestBody: false,   // Don't log request bodies (may contain PII).
+        requestBody: false, // Don't log request bodies (may contain PII).
         responseHeader: false,
-        responseBody: false,  // Don't log response bodies (may contain PII).
+        responseBody: false, // Don't log response bodies (may contain PII).
         error: true,
         logPrint: (Object object) {
           // SECURITY: In production, route to a structured logger
@@ -129,11 +129,7 @@ class DioClient {
     Options? options,
   }) async {
     return _performRequest(
-      () => _dio.get(
-        path,
-        queryParameters: queryParameters,
-        options: options,
-      ),
+      () => _dio.get(path, queryParameters: queryParameters, options: options),
     );
   }
 
@@ -282,10 +278,7 @@ class DioClient {
         final String serverMessage = _extractSafeErrorMessage(
           exception.response?.data,
         );
-        return ServerException(
-          message: serverMessage,
-          statusCode: statusCode,
-        );
+        return ServerException(message: serverMessage, statusCode: statusCode);
       case DioExceptionType.cancel:
         return const ServerException(message: 'Request was cancelled.');
       case DioExceptionType.badCertificate:
@@ -294,6 +287,15 @@ class DioClient {
           message: 'SSL certificate validation failed. Connection refused.',
         );
       case DioExceptionType.unknown:
+        return ServerException(
+          message: exception.message ?? 'An unexpected network error occurred.',
+        );
+      case DioExceptionType.transformTimeout:
+        return const ServerException(
+          message: 'Request transformation timed out. Please try again.',
+        );
+      // Ensure exhaustive handling for any future enum values.
+      default:
         return ServerException(
           message: exception.message ?? 'An unexpected network error occurred.',
         );
@@ -332,7 +334,7 @@ class AuthInterceptor extends Interceptor {
   final SecureStorageService _secureStorageService;
 
   AuthInterceptor({required SecureStorageService secureStorageService})
-      : _secureStorageService = secureStorageService;
+    : _secureStorageService = secureStorageService;
 
   /// Called before every request — injects the Bearer token if available.
   @override
@@ -341,8 +343,7 @@ class AuthInterceptor extends Interceptor {
     RequestInterceptorHandler handler,
   ) async {
     try {
-      final String? accessToken =
-          await _secureStorageService.getAccessToken();
+      final String? accessToken = await _secureStorageService.getAccessToken();
 
       if (accessToken != null && accessToken.isNotEmpty) {
         options.headers['Authorization'] = 'Bearer $accessToken';
