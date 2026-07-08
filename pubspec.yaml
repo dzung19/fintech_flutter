@@ -1,0 +1,54 @@
+# =============================================================================
+# FinTech App — Digital Wallet, Credit Card & Loan Amortization
+# =============================================================================
+# Architecture: Feature-First + Clean Architecture
+# State Management: flutter_bloc (Bloc for complex flows, Cubit for simple)
+# DI: get_it (centralized in lib/core/di/injection_container.dart)
+# Networking: dio (with AuthInterceptor for Bearer tokens)
+# Security: flutter_secure_storage (EncryptedSharedPreferences on Android)
+# Financial Math: decimal (no doubles for currency/interest calculations)
+# =============================================================================
+
+name: fintech_app
+description: "FinTech application combining Digital Wallet, Credit Card Integration, and Loan Amortization with Clean Architecture."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # --- UI ---
+  cupertino_icons: ^1.0.8
+  intl: ^0.20.3                       # Date/number formatting for financial displays
+
+  # --- State Management ---
+  flutter_bloc: ^9.1.1                # BLoC pattern for reactive state management
+  equatable: ^2.1.0                   # Value equality for BLoC states and entities
+
+  # --- Dependency Injection ---
+  get_it: ^9.2.1                      # Service locator for DI container
+
+  # --- Networking ---
+  dio: ^5.10.0                        # HTTP client with interceptors, timeouts
+
+  # --- Security ---
+  # SECURITY: All sensitive data (tokens, PINs, keys) MUST use this.
+  # NEVER use shared_preferences for credentials.
+  flutter_secure_storage: ^10.3.1     # AES-256 encrypted storage (Android/iOS)
+
+  # --- Financial Math ---
+  # SECURITY: NEVER use double for currency or interest rate calculations.
+  # Floating-point arithmetic causes rounding errors in financial contexts.
+  decimal: ^3.2.4                     # Arbitrary precision decimal arithmetic
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
