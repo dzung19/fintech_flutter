@@ -111,6 +111,8 @@ class _CardsContentState extends State<_CardsContent> {
     }
 
     final currentCard = widget.cards[_currentIndex];
+    final hasLoadedTransactions =
+        widget.transactionsByCard.containsKey(currentCard.id);
     final transactions = widget.transactionsByCard[currentCard.id] ?? const [];
 
     return Column(
@@ -173,7 +175,14 @@ class _CardsContentState extends State<_CardsContent> {
                 ),
               ),
               const SizedBox(height: 12),
-              if (transactions.isEmpty)
+              if (!hasLoadedTransactions)
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(32),
+                    child: CircularProgressIndicator(),
+                  ),
+                )
+              else if (transactions.isEmpty)
                 Center(
                   child: Padding(
                     padding: const EdgeInsets.all(32),

@@ -326,7 +326,7 @@ class _LoanCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Loan ID: ${loan.id.substring(0, 8)}',
+                  'Loan ID: ${loan.id.length > 8 ? loan.id.substring(0, 8) : loan.id}',
                   style: textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
