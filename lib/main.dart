@@ -1,53 +1,108 @@
 // =============================================================================
 // File: lib/main.dart
-// Purpose: Application entry point — initializes DI and launches the app.
+// Purpose: Application entry point — initializes DI, theming, and multi-feature
+//          navigation dashboard.
 //
 // Architecture Notes:
-// - configureDependencies() MUST be awaited before runApp() to ensure
-//   all singletons (SecureStorageService, DioClient) are available.
-// - WidgetsFlutterBinding.ensureInitialized() is required before any
-//   async work in main() (secure storage needs platform channels).
+// - Initializes DI via configureDependencies() before runApp().
+// - Uses MultiBlocProvider to supply feature BLoCs globally or at shell level.
+// - Sets up Material 3 dark/light themes defined in AppTheme.
 // =============================================================================
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'core/di/injection_container.dart';
+import 'core/theme/app_theme.dart';
+import 'features/card/presentation/bloc/card_bloc.dart';
+import 'features/card/presentation/pages/card_page.dart';
+import 'features/loan/presentation/bloc/loan_bloc.dart';
+import 'features/loan/presentation/pages/loan_page.dart';
+import 'features/wallet/presentation/bloc/wallet_bloc.dart';
+import 'features/wallet/presentation/pages/wallet_page.dart';
 
 Future<void> main() async {
-  // Required before any async calls or platform channel usage in main().
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Initialize the dependency injection container.
-  // All core services (SecureStorageService, DioClient) are registered here.
   await configureDependencies();
-
   runApp(const FinTechApp());
 }
 
-/// Root widget for the FinTech application.
-///
-/// This widget configures the global MaterialApp with theming and routing.
-/// Feature-level BLoC providers will be added at the router/page level,
-/// not here, to keep the root widget lean.
 class FinTechApp extends StatelessWidget {
   const FinTechApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'FinTech App',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
-        useMaterial3: true,
-      ),
-      home: const Scaffold(
-        body: Center(
-          child: Text(
-            'FinTech App — Core Initialized',
-            style: TextStyle(fontSize: 20),
-          ),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<WalletBloc>(
+          create: (_) => getIt<WalletBloc>(),
         ),
+        BlocProvider<CardBloc>(
+          create: (_) => getIt<CardBloc>(),
+        ),
+        BlocProvider<LoanBloc>(
+          create: (_) => getIt<LoanBloc>(),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'FinTech App',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.light,
+        darkTheme: AppTheme.dark,
+        themeMode: ThemeMode.system,
+        home: const MainDashboard(),
+      ),
+    );
+  }
+}
+
+class MainDashboard extends StatefulWidget {
+  const MainDashboard({super.key});
+
+  @override
+  State<MainDashboard> createState() => _MainDashboardState();
+}
+
+class _MainDashboardState extends State<MainDashboard> {
+  int _currentIndex = 0;
+
+  final List<Widget> _pages = const [
+    WalletPage(),
+    CardPage(),
+    LoanPage(),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _pages,
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_balance_wallet_outlined),
+            activeIcon: Icon(Icons.account_balance_wallet),
+            label: 'Wallet',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.credit_card_outlined),
+            activeIcon: Icon(Icons.credit_card),
+            label: 'Cards',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.summarize_outlined),
+            activeIcon: Icon(Icons.summarize),
+            label: 'Loans',
+          ),
+        ],
       ),
     );
   }

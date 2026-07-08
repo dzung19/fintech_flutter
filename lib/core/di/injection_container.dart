@@ -17,85 +17,48 @@
 
 import 'package:get_it/get_it.dart';
 
+import '../../features/card/data/datasources/card_remote_datasource.dart';
+import '../../features/card/data/repositories/card_repository_impl.dart';
+import '../../features/card/domain/repositories/card_repository.dart';
+import '../../features/card/domain/usecases/get_card_transactions.dart';
+import '../../features/card/domain/usecases/get_cards.dart';
+import '../../features/card/presentation/bloc/card_bloc.dart';
+import '../../features/loan/data/datasources/loan_remote_datasource.dart';
+import '../../features/loan/data/repositories/loan_repository_impl.dart';
+import '../../features/loan/domain/repositories/loan_repository.dart';
+import '../../features/loan/domain/usecases/calculate_amortization.dart';
+import '../../features/loan/domain/usecases/get_loans.dart';
+import '../../features/loan/presentation/bloc/loan_bloc.dart';
+import '../../features/wallet/data/datasources/wallet_remote_datasource.dart';
+import '../../features/wallet/data/repositories/wallet_repository_impl.dart';
+import '../../features/wallet/domain/repositories/wallet_repository.dart';
+import '../../features/wallet/domain/usecases/get_transactions.dart';
+import '../../features/wallet/domain/usecases/get_wallet_balance.dart';
+import '../../features/wallet/domain/usecases/transfer_funds.dart';
+import '../../features/wallet/presentation/bloc/wallet_bloc.dart';
 import '../network/dio_client.dart';
 import '../security/secure_storage_service.dart';
 
 /// Global service locator instance.
-///
-/// Access services anywhere via: `getIt<ServiceType>()`
-///
-/// Example:
-/// ```dart
-/// final storage = getIt<SecureStorageService>();
-/// final client = getIt<DioClient>();
-/// ```
 final GetIt getIt = GetIt.instance;
 
 /// Initializes all dependency registrations.
-///
-/// MUST be called once and awaited in `main()` before `runApp()`.
-///
-/// ```dart
-/// Future<void> main() async {
-///   WidgetsFlutterBinding.ensureInitialized();
-///   await configureDependencies();
-///   runApp(const FinTechApp());
-/// }
-/// ```
-///
-/// Registration is organized by architectural layer:
-/// 1. Core Services (security, networking)
-/// 2. Data Sources (remote/local) — added per feature
-/// 3. Repositories — added per feature
-/// 4. Use Cases — added per feature
-/// 5. BLoCs/Cubits — added per feature
 Future<void> configureDependencies() async {
-  // =========================================================================
-  // Core Services
-  // =========================================================================
+  // Core infrastructure
   _registerCoreServices();
 
-  // =========================================================================
-  // Feature: Wallet
-  // =========================================================================
-  // TODO: _registerWalletFeature();
-
-  // =========================================================================
-  // Feature: Card
-  // =========================================================================
-  // TODO: _registerCardFeature();
-
-  // =========================================================================
-  // Feature: Loan
-  // =========================================================================
-  // TODO: _registerLoanFeature();
+  // Features
+  _registerWalletFeature();
+  _registerCardFeature();
+  _registerLoanFeature();
 }
 
 /// Registers core infrastructure services (security, networking).
-///
-/// These services are shared across all features and have no feature-specific
-/// dependencies.
 void _registerCoreServices() {
-  // ---------------------------------------------------------------------------
-  // SecureStorageService — LazySingleton
-  //
-  // Why LazySingleton:
-  // - Only one instance should exist to avoid inconsistent reads/writes.
-  // - Lazy so the encrypted storage is initialized only when first needed,
-  //   not at app startup (slightly faster cold start).
-  // ---------------------------------------------------------------------------
   getIt.registerLazySingleton<SecureStorageService>(
     () => SecureStorageService(),
   );
 
-  // ---------------------------------------------------------------------------
-  // DioClient — LazySingleton
-  //
-  // Why LazySingleton:
-  // - HTTP client with interceptors should be reused to leverage connection
-  //   pooling and consistent configuration across all API calls.
-  // - Depends on SecureStorageService (must be registered above).
-  // ---------------------------------------------------------------------------
   getIt.registerLazySingleton<DioClient>(
     () => DioClient.withInterceptors(
       secureStorageService: getIt<SecureStorageService>(),
@@ -103,40 +66,79 @@ void _registerCoreServices() {
   );
 }
 
-// =============================================================================
-// Feature Registration Templates
-//
-// Each feature follows the same pattern:
-// 1. Data Sources (Remote/Local) → LazySingleton
-// 2. Repository (implements domain interface) → LazySingleton
-// 3. Use Cases → LazySingleton (stateless) or Factory (stateful)
-// 4. BLoCs/Cubits → Factory (each screen gets its own instance)
-//
-// Example:
-// void _registerWalletFeature() {
-//   // Data Sources
-//   getIt.registerLazySingleton<WalletRemoteDataSource>(
-//     () => WalletRemoteDataSourceImpl(dioClient: getIt()),
-//   );
-//
-//   // Repositories (register against the abstract interface)
-//   getIt.registerLazySingleton<WalletRepository>(
-//     () => WalletRepositoryImpl(
-//       remoteDataSource: getIt(),
-//     ),
-//   );
-//
-//   // Use Cases
-//   getIt.registerLazySingleton(() => GetWalletBalance(getIt()));
-//   getIt.registerLazySingleton(() => TransferFunds(getIt()));
-//
-//   // BLoC — Factory so each screen gets a fresh instance with
-//   // its own state lifecycle.
-//   getIt.registerFactory(
-//     () => WalletBloc(
-//       getWalletBalance: getIt(),
-//       transferFunds: getIt(),
-//     ),
-//   );
-// }
-// =============================================================================
+/// Registers Wallet feature layers in the DI container.
+void _registerWalletFeature() {
+  // Data Sources
+  getIt.registerLazySingleton<WalletRemoteDataSource>(
+    () => WalletRemoteDataSourceImpl(dioClient: getIt()),
+  );
+
+  // Repositories
+  getIt.registerLazySingleton<WalletRepository>(
+    () => WalletRepositoryImpl(remoteDataSource: getIt()),
+  );
+
+  // Use Cases
+  getIt.registerLazySingleton(() => GetWalletBalance(getIt()));
+  getIt.registerLazySingleton(() => GetTransactions(getIt()));
+  getIt.registerLazySingleton(() => TransferFunds(getIt()));
+
+  // BLoC
+  getIt.registerFactory(
+    () => WalletBloc(
+      getWalletBalance: getIt(),
+      getTransactions: getIt(),
+      transferFunds: getIt(),
+    ),
+  );
+}
+
+/// Registers Credit Card feature layers in the DI container.
+void _registerCardFeature() {
+  // Data Sources
+  getIt.registerLazySingleton<CardRemoteDataSource>(
+    () => CardRemoteDataSourceImpl(dioClient: getIt()),
+  );
+
+  // Repositories
+  getIt.registerLazySingleton<CardRepository>(
+    () => CardRepositoryImpl(remoteDataSource: getIt()),
+  );
+
+  // Use Cases
+  getIt.registerLazySingleton(() => GetCards(getIt()));
+  getIt.registerLazySingleton(() => GetCardTransactions(getIt()));
+
+  // BLoC
+  getIt.registerFactory(
+    () => CardBloc(
+      getCards: getIt(),
+      getCardTransactions: getIt(),
+    ),
+  );
+}
+
+/// Registers Loan feature layers in the DI container.
+void _registerLoanFeature() {
+  // Data Sources
+  getIt.registerLazySingleton<LoanRemoteDataSource>(
+    () => LoanRemoteDataSourceImpl(dioClient: getIt()),
+  );
+
+  // Repositories
+  getIt.registerLazySingleton<LoanRepository>(
+    () => LoanRepositoryImpl(remoteDataSource: getIt()),
+  );
+
+  // Use Cases
+  getIt.registerLazySingleton(() => GetLoans(getIt()));
+  getIt.registerLazySingleton(() => const CalculateAmortization());
+
+  // BLoC
+  getIt.registerFactory(
+    () => LoanBloc(
+      getLoans: getIt(),
+      calculateAmortization: getIt(),
+    ),
+  );
+}
