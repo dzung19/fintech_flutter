@@ -60,7 +60,7 @@ class DioClient {
   /// The [dio] parameter allows constructor injection for unit testing.
   /// In production, use the factory constructor [DioClient.withInterceptors]
   /// which wires up the [AuthInterceptor] automatically.
-  DioClient({required Dio dio}) : _dio = dio;
+  DioClient({required Dio this._dio});
 
   /// Factory constructor that creates a fully configured [DioClient] with:
   /// - Base URL and timeout settings from [ApiConfig].
@@ -294,11 +294,6 @@ class DioClient {
         return const ServerException(
           message: 'Request transformation timed out. Please try again.',
         );
-      // Ensure exhaustive handling for any future enum values.
-      default:
-        return ServerException(
-          message: exception.message ?? 'An unexpected network error occurred.',
-        );
     }
   }
 
@@ -333,8 +328,7 @@ class DioClient {
 class AuthInterceptor extends Interceptor {
   final SecureStorageService _secureStorageService;
 
-  AuthInterceptor({required SecureStorageService secureStorageService})
-    : _secureStorageService = secureStorageService;
+  AuthInterceptor({required SecureStorageService this._secureStorageService});
 
   /// Called before every request — injects the Bearer token if available.
   @override

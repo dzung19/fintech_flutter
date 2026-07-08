@@ -51,8 +51,7 @@ abstract class WalletRemoteDataSource {
 class WalletRemoteDataSourceImpl implements WalletRemoteDataSource {
   final DioClient _dioClient;
 
-  const WalletRemoteDataSourceImpl({required DioClient dioClient})
-    : _dioClient = dioClient;
+  const WalletRemoteDataSourceImpl({required DioClient this._dioClient});
 
   @override
   Future<WalletModel> getWallet() async {

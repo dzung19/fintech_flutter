@@ -13,8 +13,7 @@ import '../datasources/loan_remote_datasource.dart';
 class LoanRepositoryImpl implements LoanRepository {
   final LoanRemoteDataSource _remoteDataSource;
 
-  const LoanRepositoryImpl({required LoanRemoteDataSource remoteDataSource})
-    : _remoteDataSource = remoteDataSource;
+  const LoanRepositoryImpl({required LoanRemoteDataSource this._remoteDataSource});
 
   @override
   Future<Result<List<Loan>>> getLoans() async {

@@ -17,8 +17,7 @@ abstract class LoanRemoteDataSource {
 class LoanRemoteDataSourceImpl implements LoanRemoteDataSource {
   final DioClient _dioClient;
 
-  const LoanRemoteDataSourceImpl({required DioClient dioClient})
-    : _dioClient = dioClient;
+  const LoanRemoteDataSourceImpl({required DioClient this._dioClient});
 
   @override
   Future<List<LoanModel>> getLoans() async {

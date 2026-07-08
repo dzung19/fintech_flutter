@@ -44,6 +44,7 @@ dependencies:
   # SECURITY: NEVER use double for currency or interest rate calculations.
   # Floating-point arithmetic causes rounding errors in financial contexts.
   decimal: ^3.2.4                     # Arbitrary precision decimal arithmetic
+  rational: ^2.2.3                    # High-precision rational math for loan schedules
 
 dev_dependencies:
   flutter_test:

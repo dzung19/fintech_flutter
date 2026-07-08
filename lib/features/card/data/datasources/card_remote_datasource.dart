@@ -28,8 +28,7 @@ abstract class CardRemoteDataSource {
 class CardRemoteDataSourceImpl implements CardRemoteDataSource {
   final DioClient _dioClient;
 
-  const CardRemoteDataSourceImpl({required DioClient dioClient})
-    : _dioClient = dioClient;
+  const CardRemoteDataSourceImpl({required DioClient this._dioClient});
 
   @override
   Future<List<CreditCardModel>> getCards() async {
