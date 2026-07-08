@@ -16,7 +16,7 @@ import '../datasources/card_remote_datasource.dart';
 class CardRepositoryImpl implements CardRepository {
   final CardRemoteDataSource _remoteDataSource;
 
-  const CardRepositoryImpl({required CardRemoteDataSource this._remoteDataSource});
+  const CardRepositoryImpl({required this._remoteDataSource});
 
   @override
   Future<Result<List<CreditCard>>> getCards() async {

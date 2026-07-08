@@ -144,20 +144,17 @@ final class WalletError extends WalletState {
 /// Each event handler follows the pattern:
 ///   1. Emit loading state
 ///   2. Call use case
-///   3. Pattern-match on Result<T> → emit success or error state
+///   3. Pattern-match on `Result<T>` → emit success or error state
 class WalletBloc extends Bloc<WalletEvent, WalletState> {
   final GetWalletBalance _getWalletBalance;
   final GetTransactions _getTransactions;
   final TransferFunds _transferFunds;
 
   WalletBloc({
-    required GetWalletBalance getWalletBalance,
-    required GetTransactions getTransactions,
-    required TransferFunds transferFunds,
-  }) : _getWalletBalance = getWalletBalance,
-       _getTransactions = getTransactions,
-       _transferFunds = transferFunds,
-       super(const WalletInitial()) {
+    required this._getWalletBalance,
+    required this._getTransactions,
+    required this._transferFunds,
+  }) : super(const WalletInitial()) {
     on<LoadWallet>(_onLoadWallet);
     on<LoadTransactions>(_onLoadTransactions);
     on<SubmitTransfer>(_onSubmitTransfer);

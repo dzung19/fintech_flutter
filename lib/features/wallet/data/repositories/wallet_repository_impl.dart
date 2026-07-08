@@ -28,7 +28,7 @@ import '../datasources/wallet_remote_datasource.dart';
 class WalletRepositoryImpl implements WalletRepository {
   final WalletRemoteDataSource _remoteDataSource;
 
-  const WalletRepositoryImpl({required WalletRemoteDataSource this._remoteDataSource});
+  const WalletRepositoryImpl({required this._remoteDataSource});
 
   @override
   Future<Result<Wallet>> getWallet() async {

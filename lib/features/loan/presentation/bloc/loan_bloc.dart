@@ -99,10 +99,8 @@ class LoanBloc extends Bloc<LoanEvent, LoanState> {
   final GetLoans _getLoans;
   final CalculateAmortization _calculateAmortization;
 
-  LoanBloc({
-    required GetLoans this._getLoans,
-    required CalculateAmortization this._calculateAmortization,
-  }) : super(const LoanInitial()) {
+  LoanBloc({required this._getLoans, required this._calculateAmortization})
+    : super(const LoanInitial()) {
     on<LoadLoans>(_onLoadLoans);
     on<RunAmortizationCalculation>(_onRunAmortizationCalculation);
   }

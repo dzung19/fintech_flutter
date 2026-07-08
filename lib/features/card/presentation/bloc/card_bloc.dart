@@ -98,10 +98,8 @@ class CardBloc extends Bloc<CardEvent, CardState> {
   final GetCards _getCards;
   final GetCardTransactions _getCardTransactions;
 
-  CardBloc({
-    required GetCards this._getCards,
-    required GetCardTransactions this._getCardTransactions,
-  }) : super(const CardInitial()) {
+  CardBloc({required this._getCards, required this._getCardTransactions})
+    : super(const CardInitial()) {
     on<LoadCards>(_onLoadCards);
     on<LoadCardTransactions>(_onLoadCardTransactions);
   }
