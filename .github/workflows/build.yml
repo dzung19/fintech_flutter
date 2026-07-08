@@ -1,0 +1,129 @@
+# =============================================================================
+# GitHub Actions Workflow: Flutter CI Build (Android & iOS)
+# =============================================================================
+# This workflow runs on every push to main/master and on pull requests.
+# It validates code quality via analyzer/tests, and builds debug/unsigned
+# binaries for both Android and iOS to verify compile success.
+# =============================================================================
+
+name: Flutter CI
+
+on:
+  push:
+    branches: [ main, master, dev ]
+  pull_request:
+    branches: [ main, master, dev ]
+
+jobs:
+  # ===========================================================================
+  # Analyze & Test Job
+  # ===========================================================================
+  analyze-and-test:
+    name: Code Quality & Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Set up Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true # Enables caching for Flutter SDK and pub dependencies
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Verify formatting
+        run: flutter format --set-exit-if-changed lib/
+
+      - name: Static code analysis
+        run: flutter analyze
+
+      - name: Run unit tests
+        run: flutter test
+
+  # ===========================================================================
+  # Build Android Job
+  # ===========================================================================
+  build-android:
+    name: Build Android APK
+    needs: analyze-and-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Set up Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      # Build unsigned release APK.
+      # (Use '--debug' or '--release --no-shrink' if you don't have sign keys yet)
+      - name: Build APK (Release Unsigned)
+        run: flutter build apk --release --no-shrink
+
+      # Upload the built APK as a job artifact
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
+
+  # ===========================================================================
+  # Build iOS Job
+  # ===========================================================================
+  build-ios:
+    name: Build iOS App
+    needs: analyze-and-test
+    runs-on: macos-latest # macOS runner required for iOS build
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      # Build iOS app without code signing (standard for CI compile tests).
+      - name: Build iOS (No Code Sign)
+        run: flutter build ios --release --no-codesign
+
+      # Compress build folder to upload as artifact (since iOS builds are directories)
+      - name: Compress iOS build folder
+        run: |
+          cd build/ios/iphoneos
+          zip -r ../../../ios-app.zip Runner.app
+
+      - name: Upload iOS app artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-release-app
+          path: ios-app.zip
+          if-no-files-found: error
