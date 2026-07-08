@@ -117,7 +117,10 @@ abstract final class CurrencyFormatter {
   /// Masks an account number, showing only the last [visibleDigits].
   ///
   /// Example: `maskAccountNumber('1234567890')` → `'******7890'`
-  static String maskAccountNumber(String accountNumber, {int visibleDigits = 4}) {
+  static String maskAccountNumber(
+    String accountNumber, {
+    int visibleDigits = 4,
+  }) {
     if (accountNumber.length <= visibleDigits) {
       return accountNumber;
     }

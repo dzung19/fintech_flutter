@@ -17,7 +17,7 @@ class CardRepositoryImpl implements CardRepository {
   final CardRemoteDataSource _remoteDataSource;
 
   const CardRepositoryImpl({required CardRemoteDataSource remoteDataSource})
-      : _remoteDataSource = remoteDataSource;
+    : _remoteDataSource = remoteDataSource;
 
   @override
   Future<Result<List<CreditCard>>> getCards() async {
@@ -40,12 +40,8 @@ class CardRepositoryImpl implements CardRepository {
     int limit = 20,
   }) async {
     try {
-      final List<CardTransaction> transactions =
-          await _remoteDataSource.getCardTransactions(
-        cardId: cardId,
-        page: page,
-        limit: limit,
-      );
+      final List<CardTransaction> transactions = await _remoteDataSource
+          .getCardTransactions(cardId: cardId, page: page, limit: limit);
       return Success(transactions);
     } on AuthenticationException catch (e) {
       return Err(AuthenticationFailure(message: e.message));
@@ -59,8 +55,7 @@ class CardRepositoryImpl implements CardRepository {
   @override
   Future<Result<CreditCard>> blockCard({required String cardId}) async {
     try {
-      final CreditCard card =
-          await _remoteDataSource.blockCard(cardId: cardId);
+      final CreditCard card = await _remoteDataSource.blockCard(cardId: cardId);
       return Success(card);
     } on AuthenticationException catch (e) {
       return Err(AuthenticationFailure(message: e.message));

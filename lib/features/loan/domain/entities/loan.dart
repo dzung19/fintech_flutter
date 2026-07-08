@@ -10,12 +10,7 @@
 import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
 
-enum LoanStatus {
-  active,
-  pendingApproval,
-  paidOff,
-  defaulted,
-}
+enum LoanStatus { active, pendingApproval, paidOff, defaulted }
 
 class Loan extends Equatable {
   final String id;
@@ -38,12 +33,12 @@ class Loan extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        principalAmount,
-        annualInterestRate,
-        termMonths,
-        monthlyPayment,
-        startDate,
-        status,
-      ];
+    id,
+    principalAmount,
+    annualInterestRate,
+    termMonths,
+    monthlyPayment,
+    startDate,
+    status,
+  ];
 }

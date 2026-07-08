@@ -35,10 +35,7 @@ class WalletPage extends StatelessWidget {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
-                  'Transfer successful: ${CurrencyFormatter.format(
-                    state.transaction.amount,
-                    'USD',
-                  )}',
+                  'Transfer successful: ${CurrencyFormatter.format(state.transaction.amount, 'USD')}',
                 ),
                 backgroundColor: Theme.of(context).colorScheme.primary,
               ),
@@ -57,10 +54,12 @@ class WalletPage extends StatelessWidget {
           return switch (state) {
             WalletInitial() => const _InitialView(),
             WalletLoading() || WalletTransferring() => const Center(
-                child: CircularProgressIndicator(),
-              ),
-            WalletLoaded(:final wallet, :final transactions) =>
-              _WalletContent(wallet: wallet, transactions: transactions),
+              child: CircularProgressIndicator(),
+            ),
+            WalletLoaded(:final wallet, :final transactions) => _WalletContent(
+              wallet: wallet,
+              transactions: transactions,
+            ),
             WalletTransferSuccess() => const _InitialView(),
             WalletError(:final message) => _ErrorView(message: message),
           };
@@ -89,10 +88,7 @@ class _WalletContent extends StatelessWidget {
   final Wallet wallet;
   final List<WalletTransaction> transactions;
 
-  const _WalletContent({
-    required this.wallet,
-    required this.transactions,
-  });
+  const _WalletContent({required this.wallet, required this.transactions});
 
   @override
   Widget build(BuildContext context) {
@@ -144,18 +140,17 @@ class _WalletContent extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: colors.onPrimary.withAlpha(38),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
                     wallet.isActive ? '● Active' : '○ Inactive',
-                    style: TextStyle(
-                      color: colors.onPrimary,
-                      fontSize: 12,
-                    ),
+                    style: TextStyle(color: colors.onPrimary, fontSize: 12),
                   ),
                 ),
               ],
@@ -177,8 +172,8 @@ class _WalletContent extends StatelessWidget {
               TextButton(
                 onPressed: () {
                   context.read<WalletBloc>().add(
-                        LoadTransactions(walletId: wallet.id),
-                      );
+                    LoadTransactions(walletId: wallet.id),
+                  );
                 },
                 child: const Text('See All'),
               ),
@@ -194,8 +189,11 @@ class _WalletContent extends StatelessWidget {
                 padding: const EdgeInsets.all(32),
                 child: Column(
                   children: [
-                    Icon(Icons.receipt_long,
-                        size: 48, color: colors.onSurfaceVariant),
+                    Icon(
+                      Icons.receipt_long,
+                      size: 48,
+                      color: colors.onSurfaceVariant,
+                    ),
                     const SizedBox(height: 12),
                     Text(
                       'No transactions yet',
@@ -232,8 +230,9 @@ class _TransactionTile extends StatelessWidget {
     return Card(
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor:
-              isCredit ? Colors.green.withAlpha(31) : Colors.red.withAlpha(31),
+          backgroundColor: isCredit
+              ? Colors.green.withAlpha(31)
+              : Colors.red.withAlpha(31),
           child: Icon(
             isCredit ? Icons.arrow_downward : Icons.arrow_upward,
             color: isCredit ? Colors.green : Colors.red,
@@ -242,23 +241,16 @@ class _TransactionTile extends StatelessWidget {
         ),
         title: Text(
           transaction.description,
-          style: textTheme.bodyMedium?.copyWith(
-            fontWeight: FontWeight.w500,
-          ),
+          style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
         subtitle: Text(
           _formatDate(transaction.timestamp),
-          style: textTheme.bodySmall?.copyWith(
-            color: colors.onSurfaceVariant,
-          ),
+          style: textTheme.bodySmall?.copyWith(color: colors.onSurfaceVariant),
         ),
         trailing: Text(
-          '${isCredit ? '+' : '-'}${CurrencyFormatter.format(
-            transaction.amount,
-            'USD',
-          )}',
+          '${isCredit ? '+' : '-'}${CurrencyFormatter.format(transaction.amount, 'USD')}',
           style: textTheme.bodyMedium?.copyWith(
             color: isCredit ? Colors.green : Colors.red,
             fontWeight: FontWeight.w600,

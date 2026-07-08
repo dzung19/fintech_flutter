@@ -22,7 +22,9 @@ class LoanModel extends Loan {
     return LoanModel(
       id: json['id'] as String,
       principalAmount: Decimal.parse(json['principal_amount'].toString()),
-      annualInterestRate: Decimal.parse(json['annual_interest_rate'].toString()),
+      annualInterestRate: Decimal.parse(
+        json['annual_interest_rate'].toString(),
+      ),
       termMonths: json['term_months'] as int,
       monthlyPayment: Decimal.parse(json['monthly_payment'].toString()),
       startDate: DateTime.parse(json['start_date'] as String),

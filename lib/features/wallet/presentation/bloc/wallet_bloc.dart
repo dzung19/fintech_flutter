@@ -43,10 +43,7 @@ final class LoadTransactions extends WalletEvent {
   final String walletId;
   final int page;
 
-  const LoadTransactions({
-    required this.walletId,
-    this.page = 1,
-  });
+  const LoadTransactions({required this.walletId, this.page = 1});
 
   @override
   List<Object?> get props => [walletId, page];
@@ -95,10 +92,7 @@ final class WalletLoaded extends WalletState {
   final Wallet wallet;
   final List<WalletTransaction> transactions;
 
-  const WalletLoaded({
-    required this.wallet,
-    this.transactions = const [],
-  });
+  const WalletLoaded({required this.wallet, this.transactions = const []});
 
   @override
   List<Object?> get props => [wallet, transactions];
@@ -160,10 +154,10 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
     required GetWalletBalance getWalletBalance,
     required GetTransactions getTransactions,
     required TransferFunds transferFunds,
-  })  : _getWalletBalance = getWalletBalance,
-        _getTransactions = getTransactions,
-        _transferFunds = transferFunds,
-        super(const WalletInitial()) {
+  }) : _getWalletBalance = getWalletBalance,
+       _getTransactions = getTransactions,
+       _transferFunds = transferFunds,
+       super(const WalletInitial()) {
     on<LoadWallet>(_onLoadWallet);
     on<LoadTransactions>(_onLoadTransactions);
     on<SubmitTransfer>(_onSubmitTransfer);
@@ -193,8 +187,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
     LoadTransactions event,
     Emitter<WalletState> emit,
   ) async {
-    final Result<List<WalletTransaction>> result =
-        await _getTransactions.call(
+    final Result<List<WalletTransaction>> result = await _getTransactions.call(
       GetTransactionsParams(walletId: event.walletId, page: event.page),
     );
 

@@ -48,20 +48,19 @@ class SecureStorageService {
   /// The [storage] parameter enables constructor injection for testability —
   /// unit tests can provide a mock without touching the real keystore.
   SecureStorageService({FlutterSecureStorage? storage})
-      : _storage = storage ??
-            const FlutterSecureStorage(
-              // SECURITY: Android options enforce EncryptedSharedPreferences,
-              // which uses AES-256-SIV for key encryption and AES-256-GCM for
-              // value encryption under the hood (AndroidX Security Crypto).
-              aOptions: AndroidOptions(
-                encryptedSharedPreferences: true,
-              ),
-              // SECURITY: iOS options set accessibility to first unlock only,
-              // preventing access while the device is locked.
-              iOptions: IOSOptions(
-                accessibility: KeychainAccessibility.first_unlock,
-              ),
-            );
+    : _storage =
+          storage ??
+          const FlutterSecureStorage(
+            // SECURITY: Android options enforce EncryptedSharedPreferences,
+            // which uses AES-256-SIV for key encryption and AES-256-GCM for
+            // value encryption under the hood (AndroidX Security Crypto).
+            aOptions: AndroidOptions(encryptedSharedPreferences: true),
+            // SECURITY: iOS options set accessibility to first unlock only,
+            // preventing access while the device is locked.
+            iOptions: IOSOptions(
+              accessibility: KeychainAccessibility.first_unlock,
+            ),
+          );
 
   // ===========================================================================
   // Access Token

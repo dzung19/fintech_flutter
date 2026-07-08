@@ -111,10 +111,7 @@ void _registerCardFeature() {
 
   // BLoC
   getIt.registerFactory(
-    () => CardBloc(
-      getCards: getIt(),
-      getCardTransactions: getIt(),
-    ),
+    () => CardBloc(getCards: getIt(), getCardTransactions: getIt()),
   );
 }
 
@@ -136,9 +133,6 @@ void _registerLoanFeature() {
 
   // BLoC
   getIt.registerFactory(
-    () => LoanBloc(
-      getLoans: getIt(),
-      calculateAmortization: getIt(),
-    ),
+    () => LoanBloc(getLoans: getIt(), calculateAmortization: getIt()),
   );
 }

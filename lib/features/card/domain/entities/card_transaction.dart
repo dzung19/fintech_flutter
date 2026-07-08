@@ -59,12 +59,12 @@ class CardTransaction extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        cardId,
-        amount,
-        merchant,
-        category,
-        timestamp,
-        isPending,
-      ];
+    id,
+    cardId,
+    amount,
+    merchant,
+    category,
+    timestamp,
+    isPending,
+  ];
 }

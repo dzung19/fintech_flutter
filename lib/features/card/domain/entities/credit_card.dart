@@ -76,13 +76,13 @@ class CreditCard extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        maskedNumber,
-        holderName,
-        expiryDate,
-        creditLimit,
-        currentBalance,
-        brand,
-        status,
-      ];
+    id,
+    maskedNumber,
+    holderName,
+    expiryDate,
+    creditLimit,
+    currentBalance,
+    brand,
+    status,
+  ];
 }

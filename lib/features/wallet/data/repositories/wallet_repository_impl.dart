@@ -28,9 +28,8 @@ import '../datasources/wallet_remote_datasource.dart';
 class WalletRepositoryImpl implements WalletRepository {
   final WalletRemoteDataSource _remoteDataSource;
 
-  const WalletRepositoryImpl({
-    required WalletRemoteDataSource remoteDataSource,
-  }) : _remoteDataSource = remoteDataSource;
+  const WalletRepositoryImpl({required WalletRemoteDataSource remoteDataSource})
+    : _remoteDataSource = remoteDataSource;
 
   @override
   Future<Result<Wallet>> getWallet() async {
@@ -40,10 +39,7 @@ class WalletRepositoryImpl implements WalletRepository {
     } on AuthenticationException catch (e) {
       return Err(AuthenticationFailure(message: e.message));
     } on ServerException catch (e) {
-      return Err(ServerFailure(
-        message: e.message,
-        statusCode: e.statusCode,
-      ));
+      return Err(ServerFailure(message: e.message, statusCode: e.statusCode));
     } on Exception catch (e) {
       return Err(ServerFailure(message: 'Unexpected error: $e'));
     }
@@ -56,20 +52,13 @@ class WalletRepositoryImpl implements WalletRepository {
     int limit = 20,
   }) async {
     try {
-      final List<WalletTransaction> transactions =
-          await _remoteDataSource.getTransactions(
-        walletId: walletId,
-        page: page,
-        limit: limit,
-      );
+      final List<WalletTransaction> transactions = await _remoteDataSource
+          .getTransactions(walletId: walletId, page: page, limit: limit);
       return Success(transactions);
     } on AuthenticationException catch (e) {
       return Err(AuthenticationFailure(message: e.message));
     } on ServerException catch (e) {
-      return Err(ServerFailure(
-        message: e.message,
-        statusCode: e.statusCode,
-      ));
+      return Err(ServerFailure(message: e.message, statusCode: e.statusCode));
     } on Exception catch (e) {
       return Err(ServerFailure(message: 'Unexpected error: $e'));
     }
@@ -82,8 +71,7 @@ class WalletRepositoryImpl implements WalletRepository {
     required String description,
   }) async {
     try {
-      final WalletTransaction transaction =
-          await _remoteDataSource.transfer(
+      final WalletTransaction transaction = await _remoteDataSource.transfer(
         recipientWalletId: recipientWalletId,
         amount: amount,
         description: description,
@@ -92,10 +80,7 @@ class WalletRepositoryImpl implements WalletRepository {
     } on AuthenticationException catch (e) {
       return Err(AuthenticationFailure(message: e.message));
     } on ServerException catch (e) {
-      return Err(ServerFailure(
-        message: e.message,
-        statusCode: e.statusCode,
-      ));
+      return Err(ServerFailure(message: e.message, statusCode: e.statusCode));
     } on Exception catch (e) {
       return Err(ServerFailure(message: 'Unexpected error: $e'));
     }

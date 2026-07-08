@@ -65,10 +65,7 @@ class CardsLoaded extends CardState {
   final List<CreditCard> cards;
   final Map<String, List<CardTransaction>> transactionsByCard;
 
-  const CardsLoaded({
-    required this.cards,
-    this.transactionsByCard = const {},
-  });
+  const CardsLoaded({required this.cards, this.transactionsByCard = const {}});
 
   @override
   List<Object?> get props => [cards, transactionsByCard];
@@ -104,17 +101,14 @@ class CardBloc extends Bloc<CardEvent, CardState> {
   CardBloc({
     required GetCards getCards,
     required GetCardTransactions getCardTransactions,
-  })  : _getCards = getCards,
-        _getCardTransactions = getCardTransactions,
-        super(const CardInitial()) {
+  }) : _getCards = getCards,
+       _getCardTransactions = getCardTransactions,
+       super(const CardInitial()) {
     on<LoadCards>(_onLoadCards);
     on<LoadCardTransactions>(_onLoadCardTransactions);
   }
 
-  Future<void> _onLoadCards(
-    LoadCards event,
-    Emitter<CardState> emit,
-  ) async {
+  Future<void> _onLoadCards(LoadCards event, Emitter<CardState> emit) async {
     emit(const CardLoading());
     final result = await _getCards();
 

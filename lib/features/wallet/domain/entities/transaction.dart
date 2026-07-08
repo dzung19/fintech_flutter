@@ -86,14 +86,14 @@ class WalletTransaction extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        walletId,
-        amount,
-        type,
-        status,
-        description,
-        balanceAfter,
-        timestamp,
-        referenceId,
-      ];
+    id,
+    walletId,
+    amount,
+    type,
+    status,
+    description,
+    balanceAfter,
+    timestamp,
+    referenceId,
+  ];
 }

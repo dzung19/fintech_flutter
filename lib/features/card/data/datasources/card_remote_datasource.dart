@@ -29,7 +29,7 @@ class CardRemoteDataSourceImpl implements CardRemoteDataSource {
   final DioClient _dioClient;
 
   const CardRemoteDataSourceImpl({required DioClient dioClient})
-      : _dioClient = dioClient;
+    : _dioClient = dioClient;
 
   @override
   Future<List<CreditCardModel>> getCards() async {
@@ -40,8 +40,10 @@ class CardRemoteDataSourceImpl implements CardRemoteDataSource {
 
       final List<dynamic> dataList = response.data as List<dynamic>;
       return dataList
-          .map((dynamic item) =>
-              CreditCardModel.fromJson(item as Map<String, dynamic>))
+          .map(
+            (dynamic item) =>
+                CreditCardModel.fromJson(item as Map<String, dynamic>),
+          )
           .toList();
     } on ServerException {
       rethrow;
@@ -64,8 +66,10 @@ class CardRemoteDataSourceImpl implements CardRemoteDataSource {
 
       final List<dynamic> dataList = response.data as List<dynamic>;
       return dataList
-          .map((dynamic item) =>
-              CardTransactionModel.fromJson(item as Map<String, dynamic>))
+          .map(
+            (dynamic item) =>
+                CardTransactionModel.fromJson(item as Map<String, dynamic>),
+          )
           .toList();
     } on ServerException {
       rethrow;

@@ -39,7 +39,10 @@ class CardPage extends StatelessWidget {
             CardInitial() => const _InitialView(),
             CardLoading() => const Center(child: CircularProgressIndicator()),
             CardsLoaded(:final cards, :final transactionsByCard) =>
-              _CardsContent(cards: cards, transactionsByCard: transactionsByCard),
+              _CardsContent(
+                cards: cards,
+                transactionsByCard: transactionsByCard,
+              ),
             CardError(:final message) => _ErrorView(message: message),
           };
         },
@@ -64,10 +67,7 @@ class _CardsContent extends StatefulWidget {
   final List<CreditCard> cards;
   final Map<String, List<CardTransaction>> transactionsByCard;
 
-  const _CardsContent({
-    required this.cards,
-    required this.transactionsByCard,
-  });
+  const _CardsContent({required this.cards, required this.transactionsByCard});
 
   @override
   State<_CardsContent> createState() => _CardsContentState();
@@ -142,16 +142,35 @@ class _CardsContentState extends State<_CardsContent> {
             children: [
               Text(
                 'Card Details',
-                style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                style: textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 12),
-              _DetailRow(label: 'Limit', value: CurrencyFormatter.format(currentCard.creditLimit, 'USD')),
-              _DetailRow(label: 'Used Balance', value: CurrencyFormatter.format(currentCard.currentBalance, 'USD')),
-              _DetailRow(label: 'Available Credit', value: CurrencyFormatter.format(currentCard.availableCredit, 'USD')),
+              _DetailRow(
+                label: 'Limit',
+                value: CurrencyFormatter.format(currentCard.creditLimit, 'USD'),
+              ),
+              _DetailRow(
+                label: 'Used Balance',
+                value: CurrencyFormatter.format(
+                  currentCard.currentBalance,
+                  'USD',
+                ),
+              ),
+              _DetailRow(
+                label: 'Available Credit',
+                value: CurrencyFormatter.format(
+                  currentCard.availableCredit,
+                  'USD',
+                ),
+              ),
               const Divider(height: 32),
               Text(
                 'Recent Card Transactions',
-                style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                style: textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 12),
               if (transactions.isEmpty)
@@ -160,12 +179,16 @@ class _CardsContentState extends State<_CardsContent> {
                     padding: const EdgeInsets.all(32),
                     child: Text(
                       'No transactions for this card',
-                      style: textTheme.bodyMedium?.copyWith(color: colors.onSurfaceVariant),
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: colors.onSurfaceVariant,
+                      ),
                     ),
                   ),
                 )
               else
-                ...transactions.map((tx) => _CardTransactionTile(transaction: tx)),
+                ...transactions.map(
+                  (tx) => _CardTransactionTile(transaction: tx),
+                ),
             ],
           ),
         ),
@@ -220,7 +243,9 @@ class _CreditCardWidget extends StatelessWidget {
               Text(
                 card.status.name.toUpperCase(),
                 style: textTheme.labelSmall?.copyWith(
-                  color: card.status == CardStatus.active ? Colors.greenAccent : Colors.redAccent,
+                  color: card.status == CardStatus.active
+                      ? Colors.greenAccent
+                      : Colors.redAccent,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -241,7 +266,9 @@ class _CreditCardWidget extends StatelessWidget {
                 children: [
                   Text(
                     'HOLDER NAME',
-                    style: textTheme.labelSmall?.copyWith(color: Colors.white70),
+                    style: textTheme.labelSmall?.copyWith(
+                      color: Colors.white70,
+                    ),
                   ),
                   Text(
                     card.holderName.toUpperCase(),
@@ -257,7 +284,9 @@ class _CreditCardWidget extends StatelessWidget {
                 children: [
                   Text(
                     'EXPIRY',
-                    style: textTheme.labelSmall?.copyWith(color: Colors.white70),
+                    style: textTheme.labelSmall?.copyWith(
+                      color: Colors.white70,
+                    ),
                   ),
                   Text(
                     '${card.expiryDate.month.toString().padLeft(2, '0')}/${card.expiryDate.year.toString().substring(2)}',
@@ -292,8 +321,16 @@ class _DetailRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: textTheme.bodyMedium?.copyWith(color: colors.onSurfaceVariant)),
-          Text(value, style: textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold)),
+          Text(
+            label,
+            style: textTheme.bodyMedium?.copyWith(
+              color: colors.onSurfaceVariant,
+            ),
+          ),
+          Text(
+            value,
+            style: textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+          ),
         ],
       ),
     );
@@ -314,7 +351,10 @@ class _CardTransactionTile extends StatelessWidget {
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: colors.surfaceContainerHighest,
-          child: Icon(_getCategoryIcon(transaction.category), color: colors.primary),
+          child: Icon(
+            _getCategoryIcon(transaction.category),
+            color: colors.primary,
+          ),
         ),
         title: Text(
           transaction.merchant,
@@ -361,7 +401,11 @@ class _ErrorView extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.error_outline, size: 48, color: Theme.of(context).colorScheme.error),
+          Icon(
+            Icons.error_outline,
+            size: 48,
+            color: Theme.of(context).colorScheme.error,
+          ),
           const SizedBox(height: 16),
           Text(message, textAlign: TextAlign.center),
           const SizedBox(height: 16),

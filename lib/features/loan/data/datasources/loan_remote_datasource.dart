@@ -18,7 +18,7 @@ class LoanRemoteDataSourceImpl implements LoanRemoteDataSource {
   final DioClient _dioClient;
 
   const LoanRemoteDataSourceImpl({required DioClient dioClient})
-      : _dioClient = dioClient;
+    : _dioClient = dioClient;
 
   @override
   Future<List<LoanModel>> getLoans() async {
@@ -29,8 +29,9 @@ class LoanRemoteDataSourceImpl implements LoanRemoteDataSource {
 
       final List<dynamic> dataList = response.data as List<dynamic>;
       return dataList
-          .map((dynamic item) =>
-              LoanModel.fromJson(item as Map<String, dynamic>))
+          .map(
+            (dynamic item) => LoanModel.fromJson(item as Map<String, dynamic>),
+          )
           .toList();
     } on ServerException {
       rethrow;

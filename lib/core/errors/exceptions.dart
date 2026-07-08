@@ -17,22 +17,18 @@ class ServerException implements Exception {
   final String message;
   final int? statusCode;
 
-  const ServerException({
-    required this.message,
-    this.statusCode,
-  });
+  const ServerException({required this.message, this.statusCode});
 
   @override
-  String toString() => 'ServerException(status: $statusCode, message: $message)';
+  String toString() =>
+      'ServerException(status: $statusCode, message: $message)';
 }
 
 /// Exception thrown when local cache operations fail.
 class CacheException implements Exception {
   final String message;
 
-  const CacheException({
-    required this.message,
-  });
+  const CacheException({required this.message});
 
   @override
   String toString() => 'CacheException(message: $message)';
@@ -42,9 +38,7 @@ class CacheException implements Exception {
 class AuthenticationException implements Exception {
   final String message;
 
-  const AuthenticationException({
-    this.message = 'Authentication required.',
-  });
+  const AuthenticationException({this.message = 'Authentication required.'});
 
   @override
   String toString() => 'AuthenticationException(message: $message)';
@@ -54,9 +48,7 @@ class AuthenticationException implements Exception {
 class SecureStorageException implements Exception {
   final String message;
 
-  const SecureStorageException({
-    required this.message,
-  });
+  const SecureStorageException({required this.message});
 
   @override
   String toString() => 'SecureStorageException(message: $message)';

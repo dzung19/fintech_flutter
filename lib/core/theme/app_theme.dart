@@ -53,8 +53,9 @@ abstract final class AppTheme {
   static const EdgeInsets contentPadding = EdgeInsets.all(16.0);
 
   /// Standard horizontal padding.
-  static const EdgeInsets horizontalPadding =
-      EdgeInsets.symmetric(horizontal: 16.0);
+  static const EdgeInsets horizontalPadding = EdgeInsets.symmetric(
+    horizontal: 16.0,
+  );
 
   // ===========================================================================
   // Light Theme
@@ -109,10 +110,7 @@ abstract final class AppTheme {
           ),
           backgroundColor: colorScheme.primary,
           foregroundColor: colorScheme.onPrimary,
-          textStyle: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-          ),
+          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
       ),
 
@@ -224,10 +222,7 @@ abstract final class AppTheme {
           ),
           backgroundColor: colorScheme.primary,
           foregroundColor: colorScheme.onPrimary,
-          textStyle: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-          ),
+          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
       ),
 

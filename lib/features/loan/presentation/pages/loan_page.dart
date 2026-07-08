@@ -23,10 +23,11 @@ class LoanPage extends StatefulWidget {
   State<LoanPage> createState() => _LoanPageState();
 }
 
-class _LoanPageState extends State<LoanPage> with SingleTickerProviderStateMixin {
+class _LoanPageState extends State<LoanPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final _formKey = GlobalKey<FormState>();
-  
+
   final _principalController = TextEditingController();
   final _rateController = TextEditingController();
   final _termController = TextEditingController();
@@ -48,8 +49,9 @@ class _LoanPageState extends State<LoanPage> with SingleTickerProviderStateMixin
 
   void _calculate() {
     if (!_formKey.currentState!.validate()) return;
-    
-    final principal = Decimal.tryParse(_principalController.text) ?? Decimal.zero;
+
+    final principal =
+        Decimal.tryParse(_principalController.text) ?? Decimal.zero;
     final rate = Decimal.tryParse(_rateController.text) ?? Decimal.zero;
     final term = int.tryParse(_termController.text) ?? 0;
 
@@ -107,21 +109,24 @@ class _LoanPageState extends State<LoanPage> with SingleTickerProviderStateMixin
       LoanInitial() => const _InitialView(),
       LoanLoading() => const Center(child: CircularProgressIndicator()),
       LoanError(:final message) => _ErrorView(message: message),
-      LoansLoaded(:final loans) => loans.isEmpty
-          ? Center(
-              child: Text(
-                'No active loans found.',
-                style: textTheme.bodyLarge?.copyWith(color: colors.onSurfaceVariant),
+      LoansLoaded(:final loans) =>
+        loans.isEmpty
+            ? Center(
+                child: Text(
+                  'No active loans found.',
+                  style: textTheme.bodyLarge?.copyWith(
+                    color: colors.onSurfaceVariant,
+                  ),
+                ),
+              )
+            : ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: loans.length,
+                itemBuilder: (context, index) {
+                  final loan = loans[index];
+                  return _LoanCard(loan: loan);
+                },
               ),
-            )
-          : ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: loans.length,
-              itemBuilder: (context, index) {
-                final loan = loans[index];
-                return _LoanCard(loan: loan);
-              },
-            ),
     };
   }
 
@@ -142,7 +147,9 @@ class _LoanPageState extends State<LoanPage> with SingleTickerProviderStateMixin
           children: [
             TextFormField(
               controller: _principalController,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
               decoration: const InputDecoration(
                 labelText: 'Principal Amount (USD)',
                 hintText: 'e.g. 10000',
@@ -159,7 +166,9 @@ class _LoanPageState extends State<LoanPage> with SingleTickerProviderStateMixin
                 Expanded(
                   child: TextFormField(
                     controller: _rateController,
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                     decoration: const InputDecoration(
                       labelText: 'Annual Interest Rate (%)',
                       hintText: 'e.g. 5.5',
@@ -203,7 +212,9 @@ class _LoanPageState extends State<LoanPage> with SingleTickerProviderStateMixin
                   ? Center(
                       child: Text(
                         'Calculate a schedule to see monthly breakdown.',
-                        style: textTheme.bodyMedium?.copyWith(color: colors.onSurfaceVariant),
+                        style: textTheme.bodyMedium?.copyWith(
+                          color: colors.onSurfaceVariant,
+                        ),
                       ),
                     )
                   : Column(
@@ -211,7 +222,9 @@ class _LoanPageState extends State<LoanPage> with SingleTickerProviderStateMixin
                       children: [
                         Text(
                           'Amortization Schedule',
-                          style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                          style: textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         const SizedBox(height: 8),
                         Expanded(
@@ -231,10 +244,38 @@ class _LoanPageState extends State<LoanPage> with SingleTickerProviderStateMixin
                                   return DataRow(
                                     cells: [
                                       DataCell(Text(entry.month.toString())),
-                                      DataCell(Text(CurrencyFormatter.format(entry.payment, 'USD'))),
-                                      DataCell(Text(CurrencyFormatter.format(entry.principal, 'USD'))),
-                                      DataCell(Text(CurrencyFormatter.format(entry.interest, 'USD'))),
-                                      DataCell(Text(CurrencyFormatter.format(entry.remainingBalance, 'USD'))),
+                                      DataCell(
+                                        Text(
+                                          CurrencyFormatter.format(
+                                            entry.payment,
+                                            'USD',
+                                          ),
+                                        ),
+                                      ),
+                                      DataCell(
+                                        Text(
+                                          CurrencyFormatter.format(
+                                            entry.principal,
+                                            'USD',
+                                          ),
+                                        ),
+                                      ),
+                                      DataCell(
+                                        Text(
+                                          CurrencyFormatter.format(
+                                            entry.interest,
+                                            'USD',
+                                          ),
+                                        ),
+                                      ),
+                                      DataCell(
+                                        Text(
+                                          CurrencyFormatter.format(
+                                            entry.remainingBalance,
+                                            'USD',
+                                          ),
+                                        ),
+                                      ),
                                     ],
                                   );
                                 }).toList(),
@@ -286,18 +327,27 @@ class _LoanCard extends StatelessWidget {
               children: [
                 Text(
                   'Loan ID: ${loan.id.substring(0, 8)}',
-                  style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                  style: textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
-                    color: loan.status == LoanStatus.active ? Colors.green.withAlpha(30) : colors.surfaceContainerHighest,
+                    color: loan.status == LoanStatus.active
+                        ? Colors.green.withAlpha(30)
+                        : colors.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
                     loan.status.name.toUpperCase(),
                     style: textTheme.labelSmall?.copyWith(
-                      color: loan.status == LoanStatus.active ? Colors.green : colors.onSurfaceVariant,
+                      color: loan.status == LoanStatus.active
+                          ? Colors.green
+                          : colors.onSurfaceVariant,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -308,8 +358,16 @@ class _LoanCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildStatsItem(context, 'Principal', CurrencyFormatter.format(loan.principalAmount, 'USD')),
-                _buildStatsItem(context, 'Rate', CurrencyFormatter.formatPercentage(loan.annualInterestRate)),
+                _buildStatsItem(
+                  context,
+                  'Principal',
+                  CurrencyFormatter.format(loan.principalAmount, 'USD'),
+                ),
+                _buildStatsItem(
+                  context,
+                  'Rate',
+                  CurrencyFormatter.formatPercentage(loan.annualInterestRate),
+                ),
                 _buildStatsItem(context, 'Term', '${loan.termMonths} mos'),
               ],
             ),
@@ -317,7 +375,11 @@ class _LoanCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildStatsItem(context, 'Monthly Payment', CurrencyFormatter.format(loan.monthlyPayment, 'USD')),
+                _buildStatsItem(
+                  context,
+                  'Monthly Payment',
+                  CurrencyFormatter.format(loan.monthlyPayment, 'USD'),
+                ),
                 _buildStatsItem(
                   context,
                   'Start Date',
@@ -338,9 +400,15 @@ class _LoanCard extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: textTheme.bodySmall?.copyWith(color: colors.onSurfaceVariant)),
+        Text(
+          label,
+          style: textTheme.bodySmall?.copyWith(color: colors.onSurfaceVariant),
+        ),
         const SizedBox(height: 2),
-        Text(value, style: textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600)),
+        Text(
+          value,
+          style: textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+        ),
       ],
     );
   }
@@ -357,7 +425,11 @@ class _ErrorView extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.error_outline, size: 48, color: Theme.of(context).colorScheme.error),
+          Icon(
+            Icons.error_outline,
+            size: 48,
+            color: Theme.of(context).colorScheme.error,
+          ),
           const SizedBox(height: 16),
           Text(message, textAlign: TextAlign.center),
           const SizedBox(height: 16),

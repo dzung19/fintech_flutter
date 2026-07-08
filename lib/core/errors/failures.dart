@@ -22,10 +22,7 @@ sealed class Failure extends Equatable {
   final String message;
   final int? statusCode;
 
-  const Failure({
-    required this.message,
-    this.statusCode,
-  });
+  const Failure({required this.message, this.statusCode});
 
   @override
   List<Object?> get props => [message, statusCode];
@@ -33,17 +30,12 @@ sealed class Failure extends Equatable {
 
 /// Failure originating from network/API calls (e.g., Dio errors).
 final class ServerFailure extends Failure {
-  const ServerFailure({
-    required super.message,
-    super.statusCode,
-  });
+  const ServerFailure({required super.message, super.statusCode});
 }
 
 /// Failure originating from local cache or database operations.
 final class CacheFailure extends Failure {
-  const CacheFailure({
-    required super.message,
-  });
+  const CacheFailure({required super.message});
 }
 
 /// Failure when the device has no internet connection.
@@ -63,14 +55,10 @@ final class AuthenticationFailure extends Failure {
 
 /// Failure for secure storage read/write operations.
 final class SecureStorageFailure extends Failure {
-  const SecureStorageFailure({
-    required super.message,
-  });
+  const SecureStorageFailure({required super.message});
 }
 
 /// Failure for invalid input or validation errors.
 final class ValidationFailure extends Failure {
-  const ValidationFailure({
-    required super.message,
-  });
+  const ValidationFailure({required super.message});
 }

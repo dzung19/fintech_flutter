@@ -52,7 +52,7 @@ class WalletRemoteDataSourceImpl implements WalletRemoteDataSource {
   final DioClient _dioClient;
 
   const WalletRemoteDataSourceImpl({required DioClient dioClient})
-      : _dioClient = dioClient;
+    : _dioClient = dioClient;
 
   @override
   Future<WalletModel> getWallet() async {
@@ -79,16 +79,15 @@ class WalletRemoteDataSourceImpl implements WalletRemoteDataSource {
     try {
       final Response<dynamic> response = await _dioClient.get(
         ApiEndpoints.walletTransactions(walletId),
-        queryParameters: {
-          'page': page,
-          'limit': limit,
-        },
+        queryParameters: {'page': page, 'limit': limit},
       );
 
       final List<dynamic> dataList = response.data as List<dynamic>;
       return dataList
-          .map((dynamic item) =>
-              TransactionModel.fromJson(item as Map<String, dynamic>))
+          .map(
+            (dynamic item) =>
+                TransactionModel.fromJson(item as Map<String, dynamic>),
+          )
           .toList();
     } on ServerException {
       rethrow;

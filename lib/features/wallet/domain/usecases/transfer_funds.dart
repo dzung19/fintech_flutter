@@ -36,7 +36,9 @@ class TransferFunds {
 
     if (params.amount <= Decimal.zero) {
       return const Err(
-        ValidationFailure(message: 'Transfer amount must be greater than zero.'),
+        ValidationFailure(
+          message: 'Transfer amount must be greater than zero.',
+        ),
       );
     }
 

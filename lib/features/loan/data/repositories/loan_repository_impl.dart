@@ -14,7 +14,7 @@ class LoanRepositoryImpl implements LoanRepository {
   final LoanRemoteDataSource _remoteDataSource;
 
   const LoanRepositoryImpl({required LoanRemoteDataSource remoteDataSource})
-      : _remoteDataSource = remoteDataSource;
+    : _remoteDataSource = remoteDataSource;
 
   @override
   Future<Result<List<Loan>>> getLoans() async {

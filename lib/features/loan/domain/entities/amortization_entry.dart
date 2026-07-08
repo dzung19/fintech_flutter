@@ -27,10 +27,10 @@ class AmortizationEntry extends Equatable {
 
   @override
   List<Object?> get props => [
-        month,
-        payment,
-        principal,
-        interest,
-        remainingBalance,
-      ];
+    month,
+    payment,
+    principal,
+    interest,
+    remainingBalance,
+  ];
 }

@@ -34,15 +34,9 @@ class FinTechApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<WalletBloc>(
-          create: (_) => getIt<WalletBloc>(),
-        ),
-        BlocProvider<CardBloc>(
-          create: (_) => getIt<CardBloc>(),
-        ),
-        BlocProvider<LoanBloc>(
-          create: (_) => getIt<LoanBloc>(),
-        ),
+        BlocProvider<WalletBloc>(create: (_) => getIt<WalletBloc>()),
+        BlocProvider<CardBloc>(create: (_) => getIt<CardBloc>()),
+        BlocProvider<LoanBloc>(create: (_) => getIt<LoanBloc>()),
       ],
       child: MaterialApp(
         title: 'FinTech App',
@@ -66,19 +60,12 @@ class MainDashboard extends StatefulWidget {
 class _MainDashboardState extends State<MainDashboard> {
   int _currentIndex = 0;
 
-  final List<Widget> _pages = const [
-    WalletPage(),
-    CardPage(),
-    LoanPage(),
-  ];
+  final List<Widget> _pages = const [WalletPage(), CardPage(), LoanPage()];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _pages,
-      ),
+      body: IndexedStack(index: _currentIndex, children: _pages),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {

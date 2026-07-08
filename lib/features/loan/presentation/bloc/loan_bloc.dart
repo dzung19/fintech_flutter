@@ -66,10 +66,7 @@ class LoansLoaded extends LoanState {
   final List<Loan> loans;
   final List<AmortizationEntry> calculatedSchedule;
 
-  const LoansLoaded({
-    required this.loans,
-    this.calculatedSchedule = const [],
-  });
+  const LoansLoaded({required this.loans, this.calculatedSchedule = const []});
 
   @override
   List<Object?> get props => [loans, calculatedSchedule];
@@ -105,17 +102,14 @@ class LoanBloc extends Bloc<LoanEvent, LoanState> {
   LoanBloc({
     required GetLoans getLoans,
     required CalculateAmortization calculateAmortization,
-  })  : _getLoans = getLoans,
-        _calculateAmortization = calculateAmortization,
-        super(const LoanInitial()) {
+  }) : _getLoans = getLoans,
+       _calculateAmortization = calculateAmortization,
+       super(const LoanInitial()) {
     on<LoadLoans>(_onLoadLoans);
     on<RunAmortizationCalculation>(_onRunAmortizationCalculation);
   }
 
-  Future<void> _onLoadLoans(
-    LoadLoans event,
-    Emitter<LoanState> emit,
-  ) async {
+  Future<void> _onLoadLoans(LoadLoans event, Emitter<LoanState> emit) async {
     emit(const LoanLoading());
     final result = await _getLoans();
 
