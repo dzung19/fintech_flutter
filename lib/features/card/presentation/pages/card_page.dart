@@ -22,7 +22,18 @@ class CardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('My Cards')),
+      appBar: AppBar(
+        title: const Text('My Cards'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add_card),
+            tooltip: 'Add Card via NFC',
+            onPressed: () {
+              _showNfcScanBottomSheet(context);
+            },
+          ),
+        ],
+      ),
       body: BlocConsumer<CardBloc, CardState>(
         listener: (context, state) {
           if (state is CardError) {
@@ -417,4 +428,75 @@ class _ErrorView extends StatelessWidget {
       ),
     );
   }
+}
+
+void _showNfcScanBottomSheet(BuildContext context) {
+  final cardBloc = context.read<CardBloc>();
+  cardBloc.add(const AddCardViaNfc());
+
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (bottomSheetContext) {
+      return BlocConsumer<CardBloc, CardState>(
+        bloc: cardBloc,
+        listener: (context, state) {
+          if (state is CardsLoaded) {
+            Navigator.of(bottomSheetContext).pop();
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('NFC tag read successfully! Card added.'),
+                backgroundColor: Colors.green,
+              ),
+            );
+          } else if (state is CardError) {
+            Navigator.of(bottomSheetContext).pop();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        },
+        builder: (context, state) {
+          return Padding(
+            padding: const EdgeInsets.all(32.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.nfc,
+                  size: 80,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  'Ready to Scan',
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Hold your NFC card or tag near the back of your device.',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: 32),
+                if (state is CardLoading)
+                  const CircularProgressIndicator(),
+                const SizedBox(height: 32),
+              ],
+            ),
+          );
+        },
+      );
+    },
+  );
 }

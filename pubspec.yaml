@@ -35,10 +35,12 @@ dependencies:
   # --- Networking ---
   dio: ^5.10.0                        # HTTP client with interceptors, timeouts
 
-  # --- Security ---
+  # --- Security & Hardware ---
   # SECURITY: All sensitive data (tokens, PINs, keys) MUST use this.
   # NEVER use shared_preferences for credentials.
   flutter_secure_storage: ^10.3.1     # AES-256 encrypted storage (Android/iOS)
+  nfc_manager: ^3.4.1                 # Hardware NFC tag reading (credit cards, NDEF)
+
 
   # --- Financial Math ---
   # SECURITY: NEVER use double for currency or interest rate calculations.

@@ -16,6 +16,7 @@ import '../../domain/entities/card_transaction.dart';
 import '../../domain/entities/credit_card.dart';
 import '../../domain/usecases/get_card_transactions.dart';
 import '../../domain/usecases/get_cards.dart';
+import '../../domain/usecases/add_card_via_nfc.dart';
 
 // =============================================================================
 // Events
@@ -40,6 +41,13 @@ class LoadCardTransactions extends CardEvent {
 
   @override
   List<Object?> get props => [cardId, page];
+}
+
+class AddCardViaNfc extends CardEvent {
+  const AddCardViaNfc();
+
+  @override
+  List<Object?> get props => [];
 }
 
 // =============================================================================
@@ -97,11 +105,19 @@ class CardError extends CardState {
 class CardBloc extends Bloc<CardEvent, CardState> {
   final GetCards _getCards;
   final GetCardTransactions _getCardTransactions;
+  final AddCardViaNfcUseCase _addCardViaNfc;
 
-  CardBloc({required this._getCards, required this._getCardTransactions})
-    : super(const CardInitial()) {
+  CardBloc({
+    required GetCards getCards,
+    required GetCardTransactions getCardTransactions,
+    required AddCardViaNfcUseCase addCardViaNfc,
+  })  : _getCards = getCards,
+        _getCardTransactions = getCardTransactions,
+        _addCardViaNfc = addCardViaNfc,
+        super(const CardInitial()) {
     on<LoadCards>(_onLoadCards);
     on<LoadCardTransactions>(_onLoadCardTransactions);
+    on<AddCardViaNfc>(_onAddCardViaNfc);
   }
 
   Future<void> _onLoadCards(LoadCards event, Emitter<CardState> emit) async {
@@ -134,6 +150,29 @@ class CardBloc extends Bloc<CardEvent, CardState> {
         );
         newTransactions[event.cardId] = data;
         emit(currentState.copyWith(transactionsByCard: newTransactions));
+      case Err(:final failure):
+        emit(CardError(message: failure.message));
+    }
+  }
+
+  Future<void> _onAddCardViaNfc(
+    AddCardViaNfc event,
+    Emitter<CardState> emit,
+  ) async {
+    final currentState = state;
+    if (currentState is! CardsLoaded) {
+      emit(const CardLoading());
+    }
+
+    final result = await _addCardViaNfc();
+
+    switch (result) {
+      case Success(:final data):
+        final existingCards = currentState is CardsLoaded
+            ? currentState.cards
+            : <CreditCard>[];
+        final updatedCards = List<CreditCard>.from(existingCards)..add(data);
+        emit(CardsLoaded(cards: updatedCards));
       case Err(:final failure):
         emit(CardError(message: failure.message));
     }

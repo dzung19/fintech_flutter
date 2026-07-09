@@ -22,6 +22,7 @@ import '../../features/card/data/repositories/card_repository_impl.dart';
 import '../../features/card/domain/repositories/card_repository.dart';
 import '../../features/card/domain/usecases/get_card_transactions.dart';
 import '../../features/card/domain/usecases/get_cards.dart';
+import '../../features/card/domain/usecases/add_card_via_nfc.dart';
 import '../../features/card/presentation/bloc/card_bloc.dart';
 import '../../features/loan/data/datasources/loan_remote_datasource.dart';
 import '../../features/loan/data/repositories/loan_repository_impl.dart';
@@ -38,6 +39,7 @@ import '../../features/wallet/domain/usecases/transfer_funds.dart';
 import '../../features/wallet/presentation/bloc/wallet_bloc.dart';
 import '../network/dio_client.dart';
 import '../security/secure_storage_service.dart';
+import '../hardware/nfc_service.dart';
 
 /// Global service locator instance.
 final GetIt getIt = GetIt.instance;
@@ -63,6 +65,10 @@ void _registerCoreServices() {
     () => DioClient.withInterceptors(
       secureStorageService: getIt<SecureStorageService>(),
     ),
+  );
+
+  getIt.registerLazySingleton<NfcService>(
+    () => NfcServiceImpl(),
   );
 }
 
@@ -108,10 +114,15 @@ void _registerCardFeature() {
   // Use Cases
   getIt.registerLazySingleton(() => GetCards(getIt()));
   getIt.registerLazySingleton(() => GetCardTransactions(getIt()));
+  getIt.registerLazySingleton(() => AddCardViaNfcUseCase(getIt()));
 
   // BLoC
   getIt.registerFactory(
-    () => CardBloc(getCards: getIt(), getCardTransactions: getIt()),
+    () => CardBloc(
+      getCards: getIt(), 
+      getCardTransactions: getIt(),
+      addCardViaNfc: getIt(),
+    ),
   );
 }
 
