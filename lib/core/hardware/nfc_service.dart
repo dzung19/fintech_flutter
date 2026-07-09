@@ -14,7 +14,9 @@ abstract class NfcService {
 
   /// Starts an NFC session and waits for a single tag to be read.
   /// Returns a Map of tag data on success, or a Failure on error.
-  Future<Result<Map<String, dynamic>>> readSingleTag({String message = 'Hold your device near the tag'});
+  Future<Result<Map<String, dynamic>>> readSingleTag({
+    String message = 'Hold your device near the tag',
+  });
 }
 
 class NfcServiceImpl implements NfcService {
@@ -24,10 +26,16 @@ class NfcServiceImpl implements NfcService {
   }
 
   @override
-  Future<Result<Map<String, dynamic>>> readSingleTag({String message = 'Hold your device near the tag'}) async {
+  Future<Result<Map<String, dynamic>>> readSingleTag({
+    String message = 'Hold your device near the tag',
+  }) async {
     bool isAvailable = await NfcManager.instance.isAvailable();
     if (!isAvailable) {
-      return const Err(CacheFailure(message: 'NFC is not available or disabled on this device.'));
+      return const Err(
+        CacheFailure(
+          message: 'NFC is not available or disabled on this device.',
+        ),
+      );
     }
 
     try {
@@ -39,13 +47,13 @@ class NfcServiceImpl implements NfcService {
         onDiscovered: (NfcTag tag) async {
           // Stop session immediately after first read
           await NfcManager.instance.stopSession();
-          
+
           if (!completer.isCompleted) {
             completer.complete(Success(tag.data));
           }
         },
       );
-      
+
       return await completer.future;
     } catch (e) {
       await NfcManager.instance.stopSession();

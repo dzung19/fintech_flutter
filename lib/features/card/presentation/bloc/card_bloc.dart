@@ -111,10 +111,10 @@ class CardBloc extends Bloc<CardEvent, CardState> {
     required GetCards getCards,
     required GetCardTransactions getCardTransactions,
     required AddCardViaNfcUseCase addCardViaNfc,
-  })  : _getCards = getCards,
-        _getCardTransactions = getCardTransactions,
-        _addCardViaNfc = addCardViaNfc,
-        super(const CardInitial()) {
+  }) : _getCards = getCards,
+       _getCardTransactions = getCardTransactions,
+       _addCardViaNfc = addCardViaNfc,
+       super(const CardInitial()) {
     on<LoadCards>(_onLoadCards);
     on<LoadCardTransactions>(_onLoadCardTransactions);
     on<AddCardViaNfc>(_onAddCardViaNfc);

@@ -122,8 +122,9 @@ class _CardsContentState extends State<_CardsContent> {
     }
 
     final currentCard = widget.cards[_currentIndex];
-    final hasLoadedTransactions =
-        widget.transactionsByCard.containsKey(currentCard.id);
+    final hasLoadedTransactions = widget.transactionsByCard.containsKey(
+      currentCard.id,
+    );
     final transactions = widget.transactionsByCard[currentCard.id] ?? const [];
 
     return Column(
@@ -498,8 +499,7 @@ void _showNfcScanBottomSheet(BuildContext context) {
                   ),
                 ),
                 const SizedBox(height: 32),
-                if (state is CardLoading)
-                  const CircularProgressIndicator(),
+                if (state is CardLoading) const CircularProgressIndicator(),
                 const SizedBox(height: 32),
               ],
             ),

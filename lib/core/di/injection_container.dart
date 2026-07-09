@@ -67,9 +67,7 @@ void _registerCoreServices() {
     ),
   );
 
-  getIt.registerLazySingleton<NfcService>(
-    () => NfcServiceImpl(),
-  );
+  getIt.registerLazySingleton<NfcService>(() => NfcServiceImpl());
 }
 
 /// Registers Wallet feature layers in the DI container.
@@ -119,7 +117,7 @@ void _registerCardFeature() {
   // BLoC
   getIt.registerFactory(
     () => CardBloc(
-      getCards: getIt(), 
+      getCards: getIt(),
       getCardTransactions: getIt(),
       addCardViaNfc: getIt(),
     ),
