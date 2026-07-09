@@ -22,14 +22,17 @@ abstract class NfcService {
 class NfcServiceImpl implements NfcService {
   @override
   Future<bool> isAvailable() async {
-    return (await NfcManager.instance.checkAvailability()) == NfcAvailability.enabled;
+    return (await NfcManager.instance.checkAvailability()) ==
+        NfcAvailability.enabled;
   }
 
   @override
   Future<Result<Map<String, dynamic>>> readSingleTag({
     String message = 'Hold your device near the tag',
   }) async {
-    bool isAvailable = (await NfcManager.instance.checkAvailability()) == NfcAvailability.enabled;
+    bool isAvailable =
+        (await NfcManager.instance.checkAvailability()) ==
+        NfcAvailability.enabled;
     if (!isAvailable) {
       return const Err(
         CacheFailure(
