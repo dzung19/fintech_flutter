@@ -22,14 +22,14 @@ abstract class NfcService {
 class NfcServiceImpl implements NfcService {
   @override
   Future<bool> isAvailable() async {
-    return await NfcManager.instance.isAvailable();
+    return (await NfcManager.instance.checkAvailability()) == NfcAvailability.enabled;
   }
 
   @override
   Future<Result<Map<String, dynamic>>> readSingleTag({
     String message = 'Hold your device near the tag',
   }) async {
-    bool isAvailable = await NfcManager.instance.isAvailable();
+    bool isAvailable = (await NfcManager.instance.checkAvailability()) == NfcAvailability.enabled;
     if (!isAvailable) {
       return const Err(
         CacheFailure(
@@ -43,13 +43,17 @@ class NfcServiceImpl implements NfcService {
       final completer = Completer<Result<Map<String, dynamic>>>();
 
       await NfcManager.instance.startSession(
-        alertMessage: message,
+        pollingOptions: const {
+          NfcPollingOption.iso14443,
+          NfcPollingOption.iso15693,
+          NfcPollingOption.iso18092,
+        },
         onDiscovered: (NfcTag tag) async {
           // Stop session immediately after first read
           await NfcManager.instance.stopSession();
 
           if (!completer.isCompleted) {
-            completer.complete(Success(tag.data));
+            completer.complete(const Success(<String, dynamic>{}));
           }
         },
       );
