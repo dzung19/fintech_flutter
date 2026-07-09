@@ -26,8 +26,6 @@ class AddCardViaNfcUseCase {
         // Since we are also supporting standard tags ("flashcards"),
         // we'll just generate a mock card when any tag is detected.
 
-
-
         final mockCard = CreditCard(
           id: 'card-${DateTime.now().millisecondsSinceEpoch}',
           maskedNumber: '****-****-****-${Random().nextInt(9000) + 1000}',
