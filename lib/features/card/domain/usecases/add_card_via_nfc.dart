@@ -20,16 +20,13 @@ class AddCardViaNfcUseCase {
     );
 
     switch (result) {
-      case Success(:final data):
+      case Success():
         // Here we simulate parsing the NFC tag/card data.
         // In a real EMV scenario, you'd extract the PAN and expiry.
         // Since we are also supporting standard tags ("flashcards"),
         // we'll just generate a mock card when any tag is detected.
 
-        final randomString = data.toString().substring(
-          0,
-          min(10, data.toString().length),
-        );
+
 
         final mockCard = CreditCard(
           id: 'card-${DateTime.now().millisecondsSinceEpoch}',

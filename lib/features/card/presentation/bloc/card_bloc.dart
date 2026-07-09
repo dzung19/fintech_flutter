@@ -8,6 +8,8 @@
 // - No business logic in BLoC; delegates everything to use cases.
 // =============================================================================
 
+// ignore_for_file: prefer_initializing_formals
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
